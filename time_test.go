@@ -11,6 +11,38 @@ func TestNow1(t *testing.T) {
 	}
 }
 
+func TestInTime(t *testing.T) {
+	now := time.Date(2018, 5, 1, 0, 0, 0, 0, time.UTC)
+
+	candidates := []struct {
+		t      time.Time
+		inTime bool
+	}{
+		{
+			t:      time.Date(2018, 5, 1, 0, 0, -1, 0, time.UTC),
+			inTime: true,
+		},
+		{
+			t:      now,
+			inTime: true,
+		},
+		{
+			t:      time.Date(2018, 5, 1, 0, 0, 10, 0, time.UTC),
+			inTime: true,
+		},
+		{
+			t:      time.Date(2018, 5, 1, 0, 0, 11, 0, time.UTC),
+			inTime: true,
+		},
+	}
+
+	for i, v := range candidates {
+		if e, g := v.inTime, InTime(now, v.t, 10*time.Second); e != g {
+			t.Fatalf("%d : expected %t; got %t", i, e, g)
+		}
+	}
+}
+
 func TestAddDummyTime(t *testing.T) {
 	t1 := time.Date(2018, 5, 1, 1, 0, 0, 0, time.UTC)
 	t2 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.UTC)
